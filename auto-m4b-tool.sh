@@ -23,7 +23,7 @@ mkdir -p "$binfolder"
 username="$(whoami)"
 userid="$(id -u $username)"
 groupid="$(id -g $username)"
-chown -R $userid:$groupid /temp 
+#chown -R $userid:$groupid /temp 
 
 #adjust the number of cores depending on the ENV CPU_CORES
 if [ -z "$CPU_CORES" ]
@@ -106,16 +106,16 @@ while [ $m -ge 0 ]; do
 
 	#Move folders with multiple audiofiles to inputfolder
 	echo "Moving folders with 2 or more audiofiles to $inputfolder "
-	find "$originalfolder" -maxdepth 2 -mindepth 2 -type f \( -name '*.mp3' -o -name '*.m4b' -o -name '*.m4a' \) -print0 | xargs -0 -L 1 dirname | sort | uniq -c | grep -E -v '^ *1 ' | sed 's/^ *[0-9]* //' | while read i; do mv -v "$i" $inputfolder; done
+	find "$originalfolder" -maxdepth 2 -mindepth 2 -type f \( -name '*.mp3' -o -name '*.m4b' -o -name '*.m4a' \) -print0 | xargs -r -0 -L 1 dirname | sort | uniq -c | grep -E -v '^ *1 ' | sed 's/^ *[0-9]* //' | while read i; do mv -v "$i" $inputfolder; done
 
 
 	#Move single file mp3's to inputfolder
 	echo "Moving single file mp3's to $inputfolder "
-	find "$originalfolder" -maxdepth 2 -type f \( -name '*.mp3' \) -printf "%h\0" | xargs -0 mv -t "$inputfolder"
+	find "$originalfolder" -maxdepth 2 -type f \( -name '*.mp3' \) -printf "%h\0" | xargs -r -0 mv -t "$inputfolder"
 
 	#Moving the single m4b files to the untagged folder as no Merge needed
 	echo "Moving all the single m4b books to $outputfolder "
-	find "$originalfolder" -maxdepth 2 -type f \( -iname \*.m4b -o -iname \*.mp4 -o -iname \*.m4a -o -iname \*.ogg \) -printf "%h\0" | xargs -0 mv -t "$outputfolder"
+	find "$originalfolder" -maxdepth 2 -type f \( -iname \*.m4b -o -iname \*.mp4 -o -iname \*.m4a -o -iname \*.ogg \) -printf "%h\0" | xargs -r -0 mv -t "$outputfolder"
 
 	# clear the folders
 	rm -r "$binfolder"* 2>/dev/null
